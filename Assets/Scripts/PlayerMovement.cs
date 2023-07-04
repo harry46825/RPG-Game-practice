@@ -15,13 +15,13 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask groundMask, ceilingMask;
     float time = 0f;
     public float FPS = 60f;
-    bool Jumping = false;
+    public bool Jumping = false;
     public float deltaTime, maxTime;
  
     Vector3 velocity;
 
     public bool isCeiling;
-    bool isGrounded;
+    public bool isGrounded;
     
     void Start() 
     {
