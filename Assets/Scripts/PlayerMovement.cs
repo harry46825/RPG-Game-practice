@@ -8,7 +8,7 @@ public class PlayerMovement : MonoBehaviour
  
     public float speed = 8f;
     public float gravity = 9.81f;
-    public float jumpHeight = 4.9f;
+    public float jumpHeight = 10f;
  
     public Transform groundCheck, ceilingCheck;
     public float groundDistance = 0.4f, ceilingDistance = 0.2f;
@@ -16,7 +16,7 @@ public class PlayerMovement : MonoBehaviour
     float time = 0f;
     public float FPS = 60f;
     bool Jumping = false;
-    
+    public float deltaTime, maxTime;
  
     Vector3 velocity;
 
@@ -26,10 +26,11 @@ public class PlayerMovement : MonoBehaviour
     void Start() 
     {
         QualitySettings.vSyncCount = 0;   // 把垂直同步關掉
-        Application.targetFrameRate = (int)FPS;
+        Application.targetFrameRate = (int)FPS; //設定畫面幀數
+        deltaTime = Mathf.Sqrt(2f * jumpHeight / gravity); //根據跳躍高度、重力計算此跳躍需要t秒
+        maxTime = FPS * deltaTime; //等比例計算t秒代表要跑幾次Update()函式    
     }
 
-    // Update is called once per frame
     void Update()
     {
         //Physics.CheckSphere()函式用以偵測給定位置周圍是否有碰撞器。 重點:groundMask負責檢測哪一個層級(Layer)的碰撞器才會被偵測。
@@ -44,23 +45,18 @@ public class PlayerMovement : MonoBehaviour
 
         //利用CharacterController的內建函式來處理角色移動(位移比例*移動速度*幀數修正)。
         controller.Move(move * speed * 1 / FPS);
- 
-        //check if the player is on the ground so he can jump
         
+        //偵測是否在地面按下空白鍵(跳躍鍵)
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
-            //the equation for jumping
-            time = 60;
-            Jumping = true;
+            time = (float)((int)maxTime + 1); //設定當前time值(用來計算跑幾次Update後結束跳躍)
+            Jumping = true; //跳躍開始
         }
 
-        
-        
         if(Jumping)
         {
-            velocity.y = ((FPS - time + 1f/2f) * gravity) / (FPS * FPS);
-            velocity.y -= ((time - 1f/2f) * gravity) / (FPS * FPS); //每一次update使玩家移動此距離
-            controller.Move(velocity);
+            velocity.y = (gravity * deltaTime - (maxTime - time) * gravity / maxTime) / maxTime - 1f / 2f * gravity / maxTime / maxTime; //=號後方代表向上移動的距離
+            controller.Move(velocity); //velocity代表每一次update使玩家移動此距離
             time--;
 
             if(!isCeiling) //偵測是否頂到天花板
@@ -70,21 +66,16 @@ public class PlayerMovement : MonoBehaviour
 
             if(time == 0 || isCeiling)
             {
-                if(isCeiling) //如果是頂到天花板則使玩家做自由落體，計算掉落距離。
-                    time = 0;
-                else
-                    time = FPS - 1; //完整的跳躍結束後若尚未接觸到地面則使time回到最高速的狀態。
-
                 Jumping = false;
             }
         }
         else if(!Jumping)
         {
-            velocity.y = ((time + 1f/2f) * gravity) / (FPS * FPS); //每一次update使玩家移動此距離
-            controller.Move(velocity);
+            velocity.y = ((time + 1f/2f) * gravity) / (maxTime * maxTime); //每一次update使玩家移動此距離
+            controller.Move(-velocity);
             time++;
 
-            if(time >= FPS - 1 && isGrounded) //如果已經接觸地面則重置當前的time
+            if(isGrounded) //如果已經接觸地面則重置當前的time，否則持續掉落
             {
                 time = 0;
             }
