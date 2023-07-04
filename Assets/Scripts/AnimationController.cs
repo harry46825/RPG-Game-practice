@@ -52,30 +52,31 @@ public class AnimationController : MonoBehaviour
             animator.SetFloat("Running", 1f);
             velocityX = 0f;
             velocityZ = 0f;
-            GetComponent<PlayerMovement>().speed = 15f;
+            GetComponent<PlayerMovement>().speed = 5f;
         }
-        else if(Input.GetKeyUp("left ctrl") && GetComponent<PlayerMovement>().isGrounded) //若無按壓左ctrl則瞬間停止動畫(以此達到放開左ctrl即停止移動的視覺效果)
+        else if(!Input.GetKey("left ctrl") && GetComponent<PlayerMovement>().isGrounded) //若無按壓左ctrl則瞬間停止動畫(以此達到放開左ctrl即停止移動的視覺效果)
         {
             if(Input.GetKey("w")) //若放開左ctrl時仍持續按壓向前鍵則撥放完整走路動畫。
             {
                 velocityX = 1f;
             }
-                animator.SetFloat("Running", 0f);
-                GetComponent<PlayerMovement>().speed = 8f;
+            animator.SetFloat("Running", 0f);
+            GetComponent<PlayerMovement>().speed = 3f;
         }
 
         if(GetComponent<PlayerMovement>().Jumping && jump < 1)
         {
-            animator.SetFloat("Running", 0f);
-            velocityX = 0;
-            velocityZ = 0;
+            velocityX = 0; //關閉walk分支
+            velocityZ = 0; //關閉walk分支
             jump += acceleration / GetComponent<PlayerMovement>().maxTime;
         }
-        else if(jump >= 0)
+        else if(!GetComponent<PlayerMovement>().isGrounded)
         {
+            velocityX = 0; //關閉walk分支
+            velocityZ = 0; //關閉walk分支
             jump -= acceleration / GetComponent<PlayerMovement>().maxTime;
         }
-        else
+        else if(GetComponent<PlayerMovement>().isGrounded)
         {
             jump = 0;
         }
