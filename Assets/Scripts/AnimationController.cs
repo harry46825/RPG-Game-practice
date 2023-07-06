@@ -72,8 +72,11 @@ public class AnimationController : MonoBehaviour
             jump = 1;
         }
         else if(!GetComponent<PlayerInformation>().isGrounded)
-        {
-            fall += acceleration / GetComponent<PlayerMovement>().maxTime;
+        {   
+            if(fall < 1.7f)
+                fall += acceleration / GetComponent<PlayerMovement>().maxTime;
+            else
+                fall = 1.7f;
         }
         else
         {
