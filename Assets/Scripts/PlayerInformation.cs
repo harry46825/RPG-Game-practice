@@ -20,17 +20,18 @@ public class PlayerInformation : MonoBehaviour
     public bool isCeiling;
     public bool isGrounded;
 
-    public void DetectGround() 
+    public void DetectGround()
     {
         //Physics.CheckSphere()函式用以偵測給定位置周圍是否有碰撞器。 重點:groundMask負責檢測哪一個層級(Layer)的碰撞器才會被偵測。
-        if(Physics.CheckSphere(GroundDetectLeft.position, GroundDetectDistance, groundMask) || Physics.CheckSphere(GroundDetectRight.position, GroundDetectDistance, groundMask)
+        if (Physics.CheckSphere(GroundDetectLeft.position, GroundDetectDistance, groundMask) || Physics.CheckSphere(GroundDetectRight.position, GroundDetectDistance, groundMask)
         || Physics.CheckSphere(GroundDetectForward.position, GroundDetectDistance, groundMask) || Physics.CheckSphere(GroundDetectBackward.position, GroundDetectDistance, groundMask))
         {
             isGrounded = true;
         }
         else
         {
-            isGrounded = false;   
+            isGrounded = false;
+
         }
 
         return;
