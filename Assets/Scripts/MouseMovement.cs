@@ -32,9 +32,9 @@ public class MouseMovement : MonoBehaviour
         YRotation += mouseX;
 
         //避免YRotation無限增大或減小。
-        if(YRotation >= 180)
+        if (YRotation >= 180)
             YRotation -= 360;
-        else if(YRotation <= -180)
+        else if (YRotation <= -180)
             YRotation += 360;
 
         //通過歐拉角來改變當前旋轉值。
