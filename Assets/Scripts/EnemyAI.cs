@@ -28,9 +28,11 @@ public class EnemyAI : MonoBehaviour
     public float sightRange, attackRange;
     public bool playerInSightRange, playerInAttackRange;
 
+    public Transform RightHand;
+
     private void Awake()
     {
-        player = GameObject.Find("PlayerObj").transform;
+        player = GameObject.Find("Player").transform;
         agent = GetComponent<NavMeshAgent>();
     }
 
@@ -47,6 +49,7 @@ public class EnemyAI : MonoBehaviour
 
     private void Patroling()
     {
+        
         if (!walkPointSet) SearchWalkPoint();
 
         if (walkPointSet)
@@ -67,7 +70,14 @@ public class EnemyAI : MonoBehaviour
         walkPoint = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.z + randomZ);
 
         if (Physics.Raycast(walkPoint, -transform.up, 2f, whatIsGround))
+        {
             walkPointSet = true;
+        }
+        else
+        {
+            transform.Translate(Vector3.up * -10 * Time.deltaTime);
+        }
+
     }
 
     private void ChasePlayer()
@@ -85,10 +95,13 @@ public class EnemyAI : MonoBehaviour
         if (!alreadyAttacked)
         {
             ///Attack code here
-            Rigidbody rb = Instantiate(projectile, transform.position, Quaternion.identity).GetComponent<Rigidbody>();
-            rb.AddForce(transform.forward * 32f, ForceMode.Impulse);
-            rb.AddForce(transform.up * 8f, ForceMode.Impulse);
-            ///End of attack code
+            Rigidbody rb = Instantiate(projectile, RightHand.position, Quaternion.identity).GetComponent<Rigidbody>();
+
+            Vector3 AttackPosition = (player.position - RightHand.position);
+
+            AttackPosition.y += 2f;
+
+            rb.AddForce(AttackPosition * 2f, ForceMode.VelocityChange);
 
             alreadyAttacked = true;
             Invoke(nameof(ResetAttack), timeBetweenAttacks);
