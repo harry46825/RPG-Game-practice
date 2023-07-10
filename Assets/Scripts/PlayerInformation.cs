@@ -8,6 +8,7 @@ public class PlayerInformation : MonoBehaviour
     public float PlayerRunningSpeed = 5f;
     public float PlayerJumpHeight = 5f;
     public bool PlayerJumpping = false;
+    public float PlayerHealth = 100f;
 
     public float EnvirnomentGravity = 9.81f;
 

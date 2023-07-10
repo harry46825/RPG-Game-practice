@@ -65,7 +65,8 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (!GetComponent<PlayerInformation>().PlayerJumpping)
         {
-            velocity.y = ((time + 1f / 2f) * Gravity) / (maxTime * maxTime); //每一次update使玩家移動此距離
+            velocity.y = ((time + 1f / 2f) * Gravity) * (2 * time + 1) / (maxTime * maxTime); //每一次update使玩家移動此距離
+
             controller.Move(-velocity);
             time++;
 
