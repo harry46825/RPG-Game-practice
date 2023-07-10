@@ -11,19 +11,22 @@ public class PlayerMovement : MonoBehaviour
 
     Vector3 velocity;
 
-    float FPS, JumpHeight, Gravity;
+    float FPS, Gravity, JumpHeight, JumpSpeed;
 
     void Start()
     {
         FPS = GetComponent<PlayerInformation>().GameFPS;
-        JumpHeight = GetComponent<PlayerInformation>().PlayerJumpHeight;
         Gravity = GetComponent<PlayerInformation>().EnvirnomentGravity;
         CurrentSpeed = GetComponent<PlayerInformation>().PlayerWalkingSpeed;
+        JumpHeight = GetComponent<PlayerInformation>().PlayerJumpHeight;
 
         QualitySettings.vSyncCount = 0;   // 把垂直同步關掉
         Application.targetFrameRate = (int)FPS; //設定畫面幀數
-        deltaTime = Mathf.Sqrt(2f * JumpHeight / Gravity); //根據跳躍高度、重力計算此跳躍需要t秒
-        maxTime = FPS * deltaTime; //等比例計算t秒代表要跑幾次Update()函式
+
+        float n = Mathf.Sqrt(2 * JumpHeight / Gravity) / Time.deltaTime;
+        JumpSpeed = ((n + 1f / 2f) * Gravity * Time.deltaTime);
+
+        Debug.Log(JumpSpeed);
     }
 
     void Update()
@@ -43,37 +46,15 @@ public class PlayerMovement : MonoBehaviour
         //偵測是否在地面按下空白鍵(跳躍鍵)
         if (Input.GetKeyDown(KeyCode.Space) && GetComponent<PlayerInformation>().isGrounded)
         {
-            time = (float)((int)maxTime + 1); //設定當前time值(用來計算跑幾次Update後結束跳躍)
+            velocity.y = JumpSpeed;
             GetComponent<PlayerInformation>().PlayerJumpping = true; //跳躍開始
         }
 
-        if (GetComponent<PlayerInformation>().PlayerJumpping)
-        {
-            velocity.y = (Gravity * deltaTime - (maxTime - time) * Gravity / maxTime) / maxTime - 1f / 2f * Gravity / maxTime / maxTime; //=號後方代表向上移動的距離
-            controller.Move(velocity); //velocity代表每一次update使玩家移動此距離
-            time--;
+        velocity.y -= (Gravity * Time.deltaTime);
+        controller.Move(velocity * Time.deltaTime); //velocity代表每一次update使玩家移動此距離
 
-            if (!GetComponent<PlayerInformation>().isCeiling) //偵測是否頂到天花板
-                GetComponent<PlayerInformation>().DetectCeiling();
-            else if (GetComponent<PlayerInformation>().isGrounded) //若頂到天花板則只有再次觸碰地面會使跳躍重置
-                GetComponent<PlayerInformation>().DetectCeiling();
-
-            if (time == 0 || GetComponent<PlayerInformation>().isCeiling)
-            {
+        if(GetComponent<PlayerInformation>().PlayerJumpping)
+            if(velocity.y < 0 && GetComponent<PlayerInformation>().isGrounded)
                 GetComponent<PlayerInformation>().PlayerJumpping = false;
-            }
-        }
-        else if (!GetComponent<PlayerInformation>().PlayerJumpping)
-        {
-            velocity.y = ((time + 1f / 2f) * Gravity) * (2 * time + 1) / (maxTime * maxTime); //每一次update使玩家移動此距離
-
-            controller.Move(-velocity);
-            time++;
-
-            if (GetComponent<PlayerInformation>().isGrounded) //如果已經接觸地面則重置當前的time，否則持續掉落
-            {
-                time = 0;
-            }
-        }
     }
 }

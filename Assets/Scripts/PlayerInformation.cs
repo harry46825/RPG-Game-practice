@@ -6,7 +6,7 @@ public class PlayerInformation : MonoBehaviour
 {
     public float PlayerWalkingSpeed = 3f;
     public float PlayerRunningSpeed = 5f;
-    public float PlayerJumpHeight = 5f;
+    public float PlayerJumpHeight = 10f;
     public bool PlayerJumpping = false;
     public float PlayerHealth = 100f;
 
