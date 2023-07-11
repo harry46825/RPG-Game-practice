@@ -27,11 +27,14 @@ public class EnemyAI : MonoBehaviour
     public bool playerInSightRange, playerInAttackRange;
 
     public Transform RightHand;
+    Animator AnimatorAI;
+    float AnimationAcceleration = 1f, velocityX = 0f;
 
     private void Awake()
     {
         player = GameObject.Find("Player").transform;
         agent = GetComponent<NavMeshAgent>();
+        AnimatorAI = GetComponent<Animator>();
     }
 
     private void Update()
@@ -43,21 +46,42 @@ public class EnemyAI : MonoBehaviour
         if (!playerInSightRange && !playerInAttackRange) Patroling();
         if (playerInSightRange && !playerInAttackRange) ChasePlayer();
         if (playerInAttackRange && playerInSightRange) AttackPlayer();
+
+        if(walkPointSet)
+        {
+            Vector3 Vector = (walkPoint - transform.position);
+            Vector.y = 0;
+
+            if(velocityX < 1)
+                velocityX += (AnimationAcceleration * Time.deltaTime);
+            else
+                velocityX = 1;
+        }
+        else
+        {
+            if(velocityX > 0)
+                velocityX -= (AnimationAcceleration * Time.deltaTime);
+            else
+                velocityX = 0;
+        }
+
+        AnimatorAI.SetFloat("Velocity X", velocityX);
     }
 
     private void Patroling()
     {
         
-        if (!walkPointSet) SearchWalkPoint();
-
-        if (walkPointSet)
-            agent.SetDestination(walkPoint);
+        if (!walkPointSet)
+            SearchWalkPoint();
 
         Vector3 distanceToWalkPoint = transform.position - walkPoint;
 
         //Walkpoint reached
         if (distanceToWalkPoint.magnitude < 1f)
             walkPointSet = false;
+
+        if (walkPointSet)
+            agent.SetDestination(walkPoint);
     }
     private void SearchWalkPoint()
     {
@@ -81,6 +105,7 @@ public class EnemyAI : MonoBehaviour
     private void ChasePlayer()
     {
         walkPoint = player.position;
+        walkPointSet = true;
         agent.SetDestination(walkPoint);
     }
 
@@ -88,6 +113,7 @@ public class EnemyAI : MonoBehaviour
     {
         //Make sure enemy doesn't move
         agent.SetDestination(transform.position);
+        walkPointSet = false;
 
         transform.LookAt(player);
 

@@ -25,8 +25,6 @@ public class PlayerMovement : MonoBehaviour
 
         float n = Mathf.Sqrt(2 * JumpHeight / Gravity) / Time.deltaTime;
         JumpSpeed = ((n + 1f / 2f) * Gravity * Time.deltaTime);
-
-        Debug.Log(JumpSpeed);
     }
 
     void Update()
