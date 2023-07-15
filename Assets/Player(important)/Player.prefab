@@ -210,7 +210,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -7557540490364101082, guid: d32446f36494c714885604630e721af3, type: 3}
+  - {fileID: 2100000, guid: 4e7a2650525c8f846b9a6c5f353ffab5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1108,7 +1108,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -8474651742996372913, guid: d32446f36494c714885604630e721af3, type: 3}
+  - {fileID: 2100000, guid: 21f03b3c28aa7e54e87156b303942556, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1786,7 +1786,7 @@ Transform:
   - {fileID: 6782409230208893528}
   - {fileID: 2281539696570245747}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8622026630870766538
 MonoBehaviour:
@@ -1881,6 +1881,7 @@ MonoBehaviour:
   PlayerRunningSpeed: 5
   PlayerJumpHeight: 3
   PlayerJumpping: 0
+  PlayerHealth: 100
   EnvirnomentGravity: 9.81
   GameFPS: 60
   GroundDetectLeft: {fileID: 4817014643344234623}
